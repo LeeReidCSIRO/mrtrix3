@@ -429,6 +429,11 @@ List of MRtrix3 configuration file options
 
      The prefix to use when generating a unique name for a Python script temporary directory. By default the name of the invoked script itself will be used, followed by `-tmp-` (six random characters are then appended to produce a unique name in cases where a script may be run multiple times in parallel).
 
+*  **SignalHandlers**
+    *default: true*
+
+     Set whether or not MRtrix3 commands should set up handlers to catch any system signals in order to print a formatted error message and delete any temporary files before terminating.
+
 *  **SparseDataInitialSize**
     *default: 16777216*
 

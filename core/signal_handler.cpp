@@ -22,6 +22,7 @@
 #include <vector>
 
 #include "app.h"
+#include "file/config.h"
 #include "file/path.h"
 
 #ifdef MRTRIX_WINDOWS
@@ -47,7 +48,7 @@ namespace MR
 
           // Try to do a tempfile cleanup before printing the error, since the latter's not guaranteed to work...
           // Don't use File::unlink: may throw an exception
-          for (const auto& i : marked_files) 
+          for (const auto& i : marked_files)
             ::unlink (i.c_str());
 
 
@@ -55,12 +56,12 @@ namespace MR
           const char* msg = nullptr;
           switch (i) {
 
-#define __SIGNAL(SIG,MSG) case SIG: sig = #SIG; msg = MSG; break; 
+#define __SIGNAL(SIG,MSG) case SIG: sig = #SIG; msg = MSG; break;
 #include "signals.h"
 #undef __SIGNAL
 
             default:
-              sig = "UNKNOWN"; 
+              sig = "UNKNOWN";
               msg = "Unknown fatal system signal";
               break;
           }
@@ -89,6 +90,14 @@ namespace MR
 
     void init()
     {
+      //CONF option: SignalHandlers
+      //CONF default: true
+      //CONF Set whether or not MRtrix3 commands should set up
+      //CONF handlers to catch any system signals in order to print
+      //CONF a formatted error message and delete any temporary
+      //CONF files before terminating.
+      if (!File::Config::get_bool ("SignalHandlers", true))
+        return;
 #ifdef MRTRIX_WINDOWS
       // Use signal() rather than sigaction() for Windows, as the latter is not supported
 # define __SIGNAL(SIG,MSG) signal (SIG, handler)
